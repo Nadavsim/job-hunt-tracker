@@ -4,11 +4,12 @@ import { LeetCodeForm } from "../components/LeetCodeForm";
 import { LeetCodeSync } from "../components/LeetCodeSync";
 import { api } from "../lib/api";
 import { formatDate } from "../lib/dates";
+import { PLATFORM_LABELS } from "../lib/labels";
 import type { GoalTarget, GoalType, LeetCodeLog, Period } from "../lib/types";
 import { useResource } from "../lib/useResource";
 
 const GOAL_NAMES: Record<GoalType, string> = {
-  leetcode: "LeetCode problems",
+  leetcode: "Coding problems (LeetCode, NeetCode, …)",
   course_modules: "Course modules",
   applications: "Applications sent (counted automatically)",
 };
@@ -113,7 +114,7 @@ export function GoalsPage() {
         </ul>
       </section>
 
-      <h2 style={{ marginTop: "1.5rem" }}>LeetCode log</h2>
+      <h2 style={{ marginTop: "1.5rem" }}>Problem log</h2>
       {settings.data?.leetcode_username && (
         <div style={{ marginBottom: "0.5rem" }}>
           <LeetCodeSync onSynced={() => void logs.reload()} />
@@ -134,6 +135,7 @@ export function GoalsPage() {
               <tr>
                 <th>Date</th>
                 <th>Problem</th>
+                <th>Platform</th>
                 <th>Difficulty</th>
                 <th>Tags</th>
                 <th>No hints?</th>
@@ -148,6 +150,7 @@ export function GoalsPage() {
                   <td>
                     {l.problem} {l.source === "sync" && <span className="badge warn">synced</span>}
                   </td>
+                  <td>{PLATFORM_LABELS[l.platform]}</td>
                   <td>{l.difficulty ?? "—"}</td>
                   <td>{l.tags.join(", ")}</td>
                   <td>

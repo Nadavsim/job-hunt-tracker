@@ -3,7 +3,7 @@ import { BarChartCard } from "../components/BarChartCard";
 import { EmptyState } from "../components/EmptyState";
 import { WeeklySummaryCard } from "../components/WeeklySummaryCard";
 import { api } from "../lib/api";
-import { SOURCE_LABELS, STAGE_LABELS } from "../lib/labels";
+import { PLATFORM_LABELS, SOURCE_LABELS, STAGE_LABELS } from "../lib/labels";
 import { percent } from "../lib/summary";
 import { useResource } from "../lib/useResource";
 
@@ -14,7 +14,7 @@ export function DashboardPage() {
   if (dash.error) return <p role="alert" className="error">Could not load dashboard: {dash.error}</p>;
   if (!dash.data) return <p className="muted">Loading…</p>;
 
-  const { applications: a, leetcode: lc, week } = dash.data;
+  const { applications: a, leetcode: lc, neetcode150: nc, week } = dash.data;
 
   return (
     <div>
@@ -128,7 +128,7 @@ export function DashboardPage() {
         </>
       )}
 
-      <h2 style={{ marginTop: "1.5rem" }}>LeetCode</h2>
+      <h2 style={{ marginTop: "1.5rem" }}>Coding practice</h2>
       {lc.total === 0 ? (
         <EmptyState title="No problems logged yet">
           Log problems from <Link to="/">Today</Link> or <Link to="/goals">Goals</Link> to see breakdowns here.
@@ -139,6 +139,18 @@ export function DashboardPage() {
             <div className="big">{percent(lc.without_hints_rate)}</div>
             <div className="muted small">
               solved without hints ({lc.without_hints} of {lc.hints_known} with known hint status; {lc.total} total)
+            </div>
+            <p className="small">
+              {lc.by_platform
+                .filter((p) => p.count > 0)
+                .map((p) => `${PLATFORM_LABELS[p.platform]}: ${p.count}`)
+                .join(" · ")}
+            </p>
+            <div className="big" style={{ marginTop: "0.75rem" }}>
+              {nc.solved} / {nc.total}
+            </div>
+            <div className="muted small">
+              <Link to="/neetcode">NeetCode 150</Link> problems solved (on any platform)
             </div>
           </section>
           <section className="panel" aria-label="By difficulty">

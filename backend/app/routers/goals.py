@@ -57,7 +57,7 @@ def update_leetcode(log_id: int, data: LeetCodeLogUpdate, session: Session = Dep
     changes = data.model_dump(exclude_unset=True)
     if "tags" in changes:
         changes["tags"] = lc.normalize_tags(changes["tags"] or [])
-    for key in ("problem", "solved_on"):
+    for key in ("problem", "solved_on", "platform"):
         if key in changes and changes[key] is None:
             changes.pop(key)
     if "problem" in changes and log.source == LogSource.manual:

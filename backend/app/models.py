@@ -136,6 +136,15 @@ class LogSource(str, Enum):
     sync = "sync"
 
 
+class Platform(str, Enum):
+    """Where a problem was practised. The table is still called LeetCodeLog
+    (renaming it would orphan existing data), but it holds any coding problem."""
+
+    leetcode = "leetcode"
+    neetcode = "neetcode"
+    other = "other"
+
+
 class LeetCodeLog(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     problem: str  # name as typed, e.g. "Two Sum"
@@ -149,6 +158,7 @@ class LeetCodeLog(SQLModel, table=True):
     notes: Optional[str] = None
     solved_on: date = Field(default_factory=date.today, index=True)
     source: LogSource = LogSource.manual
+    platform: Platform = Platform.leetcode
     created_at: NaiveDatetime = Field(default_factory=now_local)
 
 

@@ -20,7 +20,8 @@ one SQLite file that is git-ignored.
 - Applications sitting in "applied" for 21+ days are *suggested* as possibly ghosted — never changed automatically
 
 **Daily goals + Today (M2)**
-- Log LeetCode problems (name/number, difficulty, topic tags, solved without hints, notes, date)
+- Log coding problems from LeetCode, NeetCode or elsewhere (name/number, platform, difficulty, topic tags,
+  solved without hints, notes, date); the form remembers your last platform
 - Courses with a module count; each finished module is logged with a date
 - Applications sent are counted automatically
 - Daily or weekly targets per goal (defaults: 2 problems/day, 1 module/day, 10 applications/week)
@@ -33,6 +34,12 @@ one SQLite file that is git-ignored.
 - Response rate by resume version (only once a version has 5+ applications)
 - LeetCode by difficulty and topic, and solved-without-hints rate
 - Weekly summary card with a copy-to-clipboard plain-text version
+
+**NeetCode 150 checklist**
+- All 150 problems grouped by NeetCode's roadmap topics, with progress per topic; opens on the topic to do next
+- "Solved" / "With hints" logs the problem for today (counts toward your daily goal and streak)
+- A problem counts as solved if it is in your log from any platform, so problems synced from LeetCode tick off too
+- The list is bundled with the app (works offline); nothing is fetched from NeetCode
 
 **LeetCode sync (M4, optional)**
 - Off by default. Set your LeetCode username in Settings, then press "Sync now" to import recent accepted
@@ -138,6 +145,7 @@ backend/                 FastAPI + SQLModel (SQLite)
       goals.py           goal progress from logged activity
       stats.py           dashboard metrics + weekly summary
       leetcode.py        tag/slug helpers
+      neetcode.py        NeetCode 150 checklist (list in app/reference/neetcode150.json)
       leetcode_sync.py   the only code that talks to the internet (opt-in)
     seed.py              fake demo data
   tests/
@@ -145,7 +153,7 @@ frontend/                React + TypeScript + Vite
   src/
     lib/                 API client, types, pure helpers (filter/sort, dates, goal labels, summary text)
     components/          QuickAdd, KanbanBoard, ApplicationTable, ApplicationDetail, GoalCard, …
-    pages/               Today, Applications, Goals, Dashboard, Contacts, Settings
+    pages/               Today, Applications, Goals, NeetCode 150, Dashboard, Contacts, Settings
 run.py                   cross-platform setup/dev/start/test helper
 ```
 

@@ -11,6 +11,7 @@ import type {
   GoalType,
   LeetCodeInput,
   LeetCodeLog,
+  NeetCodeChecklist,
   Settings,
   SyncResult,
   TodayData,
@@ -86,6 +87,10 @@ export const api = {
   completeModule: (courseId: number, body: { completed_on?: string; note?: string | null } = {}) =>
     request<Course>(`/courses/${courseId}/completions`, json("POST", body)),
   deleteCompletion: (id: number) => request<void>(`/completions/${id}`, { method: "DELETE" }),
+
+  neetcode150: () => request<NeetCodeChecklist>("/neetcode150"),
+  logNeetCode: (slug: string, solvedWithoutHints: boolean | null) =>
+    request<LeetCodeLog>(`/neetcode150/${encodeURIComponent(slug)}/log`, json("POST", { solved_without_hints: solvedWithoutHints })),
 
   listTargets: () => request<GoalTarget[]>("/goals/targets"),
   updateTarget: (goalType: GoalType, body: Partial<Omit<GoalTarget, "goal_type">>) =>

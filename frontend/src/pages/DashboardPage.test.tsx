@@ -32,7 +32,16 @@ function emptyDashboard(): DashboardData {
       by_resume: [],
       min_resume_sample: 5,
     },
-    leetcode: { total: 0, by_difficulty: [], by_tag: [], without_hints: 0, hints_known: 0, without_hints_rate: null },
+    leetcode: {
+      total: 0,
+      by_difficulty: [],
+      by_platform: [],
+      by_tag: [],
+      without_hints: 0,
+      hints_known: 0,
+      without_hints_rate: null,
+    },
+    neetcode150: { solved: 0, total: 150 },
     week: {
       week_start: "2026-03-16",
       week_end: "2026-03-22",

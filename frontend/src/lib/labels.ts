@@ -1,4 +1,4 @@
-import type { Source, Stage } from "./types";
+import type { Platform, Source, Stage } from "./types";
 
 export const STAGE_LABELS: Record<Stage, string> = {
   wishlist: "Wishlist",
@@ -16,5 +16,11 @@ export const SOURCE_LABELS: Record<Source, string> = {
   linkedin: "LinkedIn",
   referral: "Referral",
   company_site: "Company site",
+  other: "Other",
+};
+
+export const PLATFORM_LABELS: Record<Platform, string> = {
+  leetcode: "LeetCode",
+  neetcode: "NeetCode",
   other: "Other",
 };

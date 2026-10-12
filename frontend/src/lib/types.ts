@@ -67,6 +67,8 @@ export type ContactInput = Partial<Omit<Contact, "id">>;
 // ------------------------------------------------------------------ goals
 
 export type Difficulty = "easy" | "medium" | "hard";
+export const PLATFORMS = ["leetcode", "neetcode", "other"] as const;
+export type Platform = (typeof PLATFORMS)[number];
 export type GoalType = "leetcode" | "course_modules" | "applications";
 export type Period = "daily" | "weekly";
 
@@ -81,6 +83,7 @@ export interface LeetCodeLog {
   notes: string | null;
   solved_on: string;
   source: "manual" | "sync";
+  platform: Platform;
 }
 
 export type LeetCodeInput = Partial<Omit<LeetCodeLog, "id" | "slug" | "source">>;
@@ -149,11 +152,13 @@ export interface DashboardData {
   leetcode: {
     total: number;
     by_difficulty: { difficulty: Difficulty | "unknown"; count: number }[];
+    by_platform: { platform: Platform; count: number }[];
     by_tag: { tag: string; count: number }[];
     without_hints: number;
     hints_known: number;
     without_hints_rate: number | null;
   };
+  neetcode150: { solved: number; total: number };
   week: WeekSummary;
 }
 
@@ -179,4 +184,29 @@ export interface SyncResult {
   imported: number;
   skipped_duplicates: number;
   last_sync: string;
+}
+
+// ---------------------------------------------------------------- neetcode
+
+export interface NeetCodeProblem {
+  number: number;
+  title: string;
+  slug: string;
+  topic: string;
+  difficulty: Difficulty;
+  first_solved_on: string | null;
+  times_solved: number;
+}
+
+export interface NeetCodeTopic {
+  topic: string;
+  total: number;
+  solved: number;
+  problems: NeetCodeProblem[];
+}
+
+export interface NeetCodeChecklist {
+  total: number;
+  solved: number;
+  topics: NeetCodeTopic[];
 }
