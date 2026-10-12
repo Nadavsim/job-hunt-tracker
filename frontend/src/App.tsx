@@ -1,9 +1,13 @@
 import { NavLink, Navigate, Route, Routes } from "react-router-dom";
 import { ApplicationsPage } from "./pages/ApplicationsPage";
 import { ContactsPage } from "./pages/ContactsPage";
+import { GoalsPage } from "./pages/GoalsPage";
+import { TodayPage } from "./pages/TodayPage";
 
 const NAV = [
+  { to: "/", label: "Today" },
   { to: "/applications", label: "Applications" },
+  { to: "/goals", label: "Goals" },
   { to: "/contacts", label: "Contacts" },
 ];
 
@@ -13,14 +17,16 @@ export function App() {
       <nav className="nav" aria-label="Main">
         <span className="brand">Job Hunt</span>
         {NAV.map((n) => (
-          <NavLink key={n.to} to={n.to}>
+          <NavLink key={n.to} to={n.to} end={n.to === "/"}>
             {n.label}
           </NavLink>
         ))}
       </nav>
       <main>
         <Routes>
-          <Route path="/" element={<Navigate to="/applications" replace />} />
+          <Route path="/" element={<TodayPage />} />
+          <Route path="/today" element={<Navigate to="/" replace />} />
+          <Route path="/goals" element={<GoalsPage />} />
           <Route path="/applications" element={<ApplicationsPage />} />
           <Route path="/contacts" element={<ContactsPage />} />
           <Route path="*" element={<p>Page not found.</p>} />

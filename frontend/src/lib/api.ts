@@ -1,6 +1,17 @@
 // Thin fetch wrapper. All calls go to /api, which Vite proxies in dev and
 // FastAPI serves directly in the built app.
-import type { Application, ApplicationInput, Contact, ContactInput } from "./types";
+import type {
+  Application,
+  ApplicationInput,
+  Contact,
+  ContactInput,
+  Course,
+  GoalTarget,
+  GoalType,
+  LeetCodeInput,
+  LeetCodeLog,
+  TodayData,
+} from "./types";
 
 export class ApiError extends Error {
   constructor(
@@ -51,4 +62,24 @@ export const api = {
   createContact: (body: ContactInput) => request<Contact>("/contacts", json("POST", body)),
   updateContact: (id: number, body: ContactInput) => request<Contact>(`/contacts/${id}`, json("PATCH", body)),
   deleteContact: (id: number) => request<void>(`/contacts/${id}`, { method: "DELETE" }),
+
+  today: () => request<TodayData>("/today"),
+
+  listLeetCode: () => request<LeetCodeLog[]>("/leetcode"),
+  logLeetCode: (body: LeetCodeInput) => request<LeetCodeLog>("/leetcode", json("POST", body)),
+  updateLeetCode: (id: number, body: LeetCodeInput) => request<LeetCodeLog>(`/leetcode/${id}`, json("PATCH", body)),
+  deleteLeetCode: (id: number) => request<void>(`/leetcode/${id}`, { method: "DELETE" }),
+
+  listCourses: () => request<Course[]>("/courses"),
+  createCourse: (body: { name: string; total_modules: number }) => request<Course>("/courses", json("POST", body)),
+  updateCourse: (id: number, body: Partial<Pick<Course, "name" | "total_modules" | "archived">>) =>
+    request<Course>(`/courses/${id}`, json("PATCH", body)),
+  deleteCourse: (id: number) => request<void>(`/courses/${id}`, { method: "DELETE" }),
+  completeModule: (courseId: number, body: { completed_on?: string; note?: string | null } = {}) =>
+    request<Course>(`/courses/${courseId}/completions`, json("POST", body)),
+  deleteCompletion: (id: number) => request<void>(`/completions/${id}`, { method: "DELETE" }),
+
+  listTargets: () => request<GoalTarget[]>("/goals/targets"),
+  updateTarget: (goalType: GoalType, body: Partial<Omit<GoalTarget, "goal_type">>) =>
+    request<GoalTarget>(`/goals/targets/${goalType}`, json("PATCH", body)),
 };

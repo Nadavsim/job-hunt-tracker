@@ -63,3 +63,64 @@ export interface Contact {
 }
 
 export type ContactInput = Partial<Omit<Contact, "id">>;
+
+// ------------------------------------------------------------------ goals
+
+export type Difficulty = "easy" | "medium" | "hard";
+export type GoalType = "leetcode" | "course_modules" | "applications";
+export type Period = "daily" | "weekly";
+
+export interface LeetCodeLog {
+  id: number;
+  problem: string;
+  number: number | null;
+  slug: string;
+  difficulty: Difficulty | null;
+  tags: string[];
+  solved_without_hints: boolean | null;
+  notes: string | null;
+  solved_on: string;
+  source: "manual" | "sync";
+}
+
+export type LeetCodeInput = Partial<Omit<LeetCodeLog, "id" | "slug" | "source">>;
+
+export interface ModuleCompletion {
+  id: number;
+  course_id: number;
+  completed_on: string;
+  note: string | null;
+}
+
+export interface Course {
+  id: number;
+  name: string;
+  total_modules: number;
+  archived: boolean;
+  modules_completed: number;
+  completions: ModuleCompletion[];
+}
+
+export interface GoalTarget {
+  goal_type: GoalType;
+  period: Period;
+  target: number;
+  enabled: boolean;
+}
+
+export interface GoalProgress extends GoalTarget {
+  label: string;
+  period_start: string;
+  count: number;
+  met: boolean;
+  today_count: number;
+  current_streak: number;
+  longest_streak: number;
+}
+
+export interface TodayData {
+  date: string;
+  goals: GoalProgress[];
+  follow_ups: Application[];
+  stale: Application[];
+}

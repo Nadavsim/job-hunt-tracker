@@ -1,4 +1,4 @@
-import type { Application } from "../lib/types";
+import type { Application, GoalProgress, TodayData } from "../lib/types";
 
 let nextId = 1;
 
@@ -24,6 +24,37 @@ export function makeApp(overrides: Partial<Application> = {}): Application {
     contacts: [],
     days_in_stage: 0,
     is_stale: false,
+    ...overrides,
+  };
+}
+
+export function makeGoal(overrides: Partial<GoalProgress> = {}): GoalProgress {
+  return {
+    goal_type: "leetcode",
+    label: "LeetCode problems",
+    period: "daily",
+    period_start: "2026-03-18",
+    target: 2,
+    enabled: true,
+    count: 0,
+    met: false,
+    today_count: 0,
+    current_streak: 0,
+    longest_streak: 0,
+    ...overrides,
+  };
+}
+
+export function makeToday(overrides: Partial<TodayData> = {}): TodayData {
+  return {
+    date: "2026-03-18",
+    goals: [
+      makeGoal(),
+      makeGoal({ goal_type: "course_modules", label: "Course modules", target: 1 }),
+      makeGoal({ goal_type: "applications", label: "Applications sent", period: "weekly", target: 10 }),
+    ],
+    follow_ups: [],
+    stale: [],
     ...overrides,
   };
 }

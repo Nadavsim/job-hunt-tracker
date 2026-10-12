@@ -191,3 +191,24 @@ class GoalTargetUpdate(BaseModel):
     period: Optional[Period] = None
     target: Optional[int] = Field(default=None, ge=1, le=1000)
     enabled: Optional[bool] = None
+
+
+class GoalProgressRead(BaseModel):
+    goal_type: GoalType
+    label: str
+    period: Period
+    period_start: date  # first day of the current day/week
+    target: int
+    enabled: bool
+    count: int  # activity so far in the current period
+    met: bool
+    today_count: int
+    current_streak: int
+    longest_streak: int
+
+
+class TodayRead(BaseModel):
+    date: date
+    goals: list[GoalProgressRead]
+    follow_ups: list["ApplicationRead"]  # due today or overdue
+    stale: list["ApplicationRead"]
