@@ -1,0 +1,65 @@
+// Mirrors backend/app/schemas.py. Dates are ISO strings ("2026-03-18"),
+// datetimes are local wall-clock ISO strings without a timezone.
+
+export const STAGES = [
+  "wishlist",
+  "applied",
+  "online_assessment",
+  "phone_screen",
+  "interview",
+  "offer",
+  "rejected",
+  "ghosted",
+  "withdrawn",
+] as const;
+export type Stage = (typeof STAGES)[number];
+
+export const SOURCES = ["linkedin", "referral", "company_site", "other"] as const;
+export type Source = (typeof SOURCES)[number];
+
+export interface StageChange {
+  stage: Stage;
+  changed_at: string;
+}
+
+export interface ContactRef {
+  id: number;
+  name: string;
+}
+
+export interface Application {
+  id: number;
+  company: string;
+  role: string;
+  job_url: string | null;
+  location: string | null;
+  source: Source;
+  stage: Stage;
+  date_applied: string | null;
+  notes: string | null;
+  resume_version: string | null;
+  next_follow_up: string | null;
+  archived: boolean;
+  created_at: string;
+  updated_at: string;
+  history: StageChange[];
+  contacts: ContactRef[];
+  days_in_stage: number;
+  is_stale: boolean;
+}
+
+export type ApplicationInput = Partial<
+  Omit<Application, "id" | "created_at" | "updated_at" | "history" | "contacts" | "days_in_stage" | "is_stale">
+> & { contact_ids?: number[] };
+
+export interface Contact {
+  id: number;
+  name: string;
+  role: string | null;
+  email: string | null;
+  linkedin: string | null;
+  notes: string | null;
+  application_ids: number[];
+}
+
+export type ContactInput = Partial<Omit<Contact, "id">>;
