@@ -60,16 +60,18 @@ export interface Contact {
   linkedin: string | null;
   notes: string | null;
   application_ids: number[];
+  outreach_count: number;
+  last_contacted: string | null;
 }
 
-export type ContactInput = Partial<Omit<Contact, "id">>;
+export type ContactInput = Partial<Omit<Contact, "id" | "outreach_count" | "last_contacted">>;
 
 // ------------------------------------------------------------------ goals
 
 export type Difficulty = "easy" | "medium" | "hard";
 export const PLATFORMS = ["leetcode", "neetcode", "other"] as const;
 export type Platform = (typeof PLATFORMS)[number];
-export type GoalType = "leetcode" | "course_modules" | "applications";
+export type GoalType = "leetcode" | "course_modules" | "applications" | "mock_interviews" | "networking";
 export type Period = "daily" | "weekly";
 
 export interface LeetCodeLog {
@@ -159,6 +161,8 @@ export interface DashboardData {
     without_hints_rate: number | null;
   };
   neetcode150: { solved: number; total: number };
+  mock_interviews: { total: number; by_kind: { kind: MockKind; count: number; avg_rating: number | null }[] };
+  networking: { total: number; people_reached: number; by_kind: { kind: OutreachKind; count: number }[] };
   week: WeekSummary;
 }
 
@@ -169,6 +173,8 @@ export interface WeekSummary {
   responses: number;
   problems: number;
   modules: number;
+  mock_interviews: number;
+  outreach: number;
   longest_streak: { goal_type: GoalType; label: string; length: number; period: Period } | null;
 }
 
@@ -209,4 +215,40 @@ export interface NeetCodeChecklist {
   total: number;
   solved: number;
   topics: NeetCodeTopic[];
+}
+
+// ------------------------------------------------- mock interviews / networking
+
+export const MOCK_KINDS = ["technical", "behavioral", "system_design", "other"] as const;
+export type MockKind = (typeof MOCK_KINDS)[number];
+
+export interface MockInterview {
+  id: number;
+  held_on: string;
+  kind: MockKind;
+  partner: string | null;
+  self_rating: number | null;
+  notes: string | null;
+}
+
+export type MockInterviewInput = Partial<Omit<MockInterview, "id">>;
+
+export const OUTREACH_KINDS = ["message", "coffee_chat", "referral_ask", "follow_up", "other"] as const;
+export type OutreachKind = (typeof OUTREACH_KINDS)[number];
+
+export interface Outreach {
+  id: number;
+  contact_id: number | null;
+  contact_name: string | null;
+  kind: OutreachKind;
+  happened_on: string;
+  notes: string | null;
+}
+
+export interface OutreachInput {
+  contact_id?: number | null;
+  new_contact_name?: string | null;
+  kind?: OutreachKind;
+  happened_on?: string;
+  notes?: string | null;
 }

@@ -152,7 +152,7 @@ def test_course_goal_counts_completions(client):
 def test_today_view_brand_new_user(client):
     body = client.get("/api/today").json()
     assert body["date"] == TODAY.isoformat()
-    assert len(body["goals"]) == 3
+    assert len(body["goals"]) == 5
     assert body["follow_ups"] == [] and body["stale"] == []
 
 

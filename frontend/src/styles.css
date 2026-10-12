@@ -162,3 +162,7 @@ details.topic summary .topic-name { font-weight: 600; }
 .badge.diff-hard { background: var(--surface-2); color: var(--danger); }
 details.topic summary::before { content: "▸"; color: var(--muted); }
 details.topic[open] summary::before { content: "▾"; }
+
+/* Mock interview rating */
+fieldset.rating { display: flex; gap: 0.6rem; align-items: center; padding: 0.2rem 0.6rem; margin: 0; }
+fieldset.rating legend { font-size: 0.85rem; color: var(--muted); padding: 0 0.2rem; }

@@ -1,4 +1,13 @@
-import type { GoalProgress, Period } from "./types";
+import type { GoalProgress, GoalType, Period } from "./types";
+
+/** Where each goal's activity is logged, for the "Log →" link on goal cards. */
+export const GOAL_LOG_LINKS: Record<GoalType, string> = {
+  leetcode: "/goals",
+  course_modules: "/goals",
+  applications: "/applications",
+  mock_interviews: "/mocks",
+  networking: "/networking",
+};
 
 /** "Dynamic Programming, arrays,, " -> ["dynamic programming", "arrays"] */
 export function parseTags(input: string): string[] {

@@ -41,6 +41,14 @@ one SQLite file that is git-ignored.
 - A problem counts as solved if it is in your log from any platform, so problems synced from LeetCode tick off too
 - The list is bundled with the app (works offline); nothing is fetched from NeetCode
 
+**Mock interviews and networking**
+- Mock interviews log: type (technical, behavioral, system design), with whom, a 1–5 self-rating, what to improve
+- Networking log: messages, coffee chats, referral asks, follow-ups, linked to a contact. Pick an existing
+  contact, type a new name (the contact is created for you), or log it without anyone in particular
+- "Last contacted" on every contact, plus a one-click "+1 message"
+- Both have weekly goals with streaks (defaults: 2 mock interviews, 5 networking actions) and appear on Today,
+  in the weekly summary and on the dashboard (count and average rating per mock type, people reached)
+
 **LeetCode sync (M4, optional)**
 - Off by default. Set your LeetCode username in Settings, then press "Sync now" to import recent accepted
   submissions. Deduplicated against problems you logged by hand. Uses LeetCode's unofficial public API, so it
@@ -138,7 +146,8 @@ backend/                 FastAPI + SQLModel (SQLite)
     clock.py             injectable "now" so time rules are testable
     models.py            ALL tables (one module → easy to add Alembic later)
     schemas.py           API request/response models
-    routers/             thin HTTP layer: applications, contacts, goals, today, dashboard, settings
+    routers/             thin HTTP layer: applications, contacts, goals, neetcode, practice (mocks + outreach),
+                         today, dashboard, settings
     services/            business rules, mostly pure functions:
       applications.py    stage history, stale rule
       streaks.py         streak calculation
@@ -153,7 +162,7 @@ frontend/                React + TypeScript + Vite
   src/
     lib/                 API client, types, pure helpers (filter/sort, dates, goal labels, summary text)
     components/          QuickAdd, KanbanBoard, ApplicationTable, ApplicationDetail, GoalCard, …
-    pages/               Today, Applications, Goals, NeetCode 150, Dashboard, Contacts, Settings
+    pages/               Today, Applications, Goals, NeetCode 150, Mock interviews, Networking, Dashboard, Settings
 run.py                   cross-platform setup/dev/start/test helper
 ```
 

@@ -6,7 +6,7 @@ from typing import Annotated, Optional
 
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints
 
-from .models import Difficulty, GoalType, LogSource, Period, Platform, Source, Stage
+from .models import Difficulty, GoalType, LogSource, MockKind, OutreachKind, Period, Platform, Source, Stage
 
 NonEmpty = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=300)]
 OptionalText = Optional[Annotated[str, StringConstraints(strip_whitespace=True, max_length=10_000)]]
@@ -43,6 +43,8 @@ class ContactUpdate(BaseModel):
 class ContactRead(ORM, ContactBase):
     id: int
     application_ids: list[int] = []
+    outreach_count: int = 0
+    last_contacted: Optional[date] = None
 
 
 class ContactRef(ORM):
@@ -215,3 +217,60 @@ class TodayRead(BaseModel):
     goals: list[GoalProgressRead]
     follow_ups: list["ApplicationRead"]  # due today or overdue
     stale: list["ApplicationRead"]
+
+
+# ------------------------------------------------- mock interviews / networking
+
+Rating = Annotated[int, Field(ge=1, le=5)]
+
+
+class MockInterviewCreate(BaseModel):
+    held_on: Optional[date] = None  # defaults to today
+    kind: MockKind = MockKind.technical
+    partner: OptionalText = None
+    self_rating: Optional[Rating] = None
+    notes: OptionalText = None
+
+
+class MockInterviewUpdate(BaseModel):
+    held_on: Optional[date] = None
+    kind: Optional[MockKind] = None
+    partner: OptionalText = None
+    self_rating: Optional[Rating] = None
+    notes: OptionalText = None
+
+
+class MockInterviewRead(ORM):
+    id: int
+    held_on: date
+    kind: MockKind
+    partner: Optional[str]
+    self_rating: Optional[int]
+    notes: Optional[str]
+
+
+class OutreachCreate(BaseModel):
+    """Either pick an existing contact or type a new name - the contact is
+    created on the fly so logging a message never needs two forms."""
+
+    contact_id: Optional[int] = None
+    new_contact_name: Optional[NonEmpty] = None
+    kind: OutreachKind = OutreachKind.message
+    happened_on: Optional[date] = None  # defaults to today
+    notes: OptionalText = None
+
+
+class OutreachUpdate(BaseModel):
+    contact_id: Optional[int] = None
+    kind: Optional[OutreachKind] = None
+    happened_on: Optional[date] = None
+    notes: OptionalText = None
+
+
+class OutreachRead(ORM):
+    id: int
+    contact_id: Optional[int]
+    contact_name: Optional[str]  # None if the contact was deleted
+    kind: OutreachKind
+    happened_on: date
+    notes: Optional[str]

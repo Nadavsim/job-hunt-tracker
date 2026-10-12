@@ -12,6 +12,8 @@ const GOAL_NAMES: Record<GoalType, string> = {
   leetcode: "Coding problems (LeetCode, NeetCode, …)",
   course_modules: "Course modules",
   applications: "Applications sent (counted automatically)",
+  mock_interviews: "Mock interviews",
+  networking: "Networking (messages, chats, referral asks)",
 };
 
 function hintsValue(v: boolean | null) {

@@ -26,7 +26,11 @@ from ..models import (
     Application,
     Difficulty,
     LeetCodeLog,
+    MockInterview,
+    MockKind,
     ModuleCompletion,
+    Outreach,
+    OutreachKind,
     Platform,
     Stage,
 )
@@ -143,13 +147,43 @@ def leetcode_stats(logs: list[LeetCodeLog]) -> dict:
     }
 
 
+def mock_stats(mocks: list[MockInterview]) -> dict:
+    """Count and average self-rating per kind. Average uses rated mocks only."""
+    rows = []
+    for kind in MockKind:
+        of_kind = [m for m in mocks if m.kind == kind]
+        rated = [m.self_rating for m in of_kind if m.self_rating is not None]
+        rows.append(
+            {
+                "kind": kind.value,
+                "count": len(of_kind),
+                "avg_rating": round(sum(rated) / len(rated), 1) if rated else None,
+            }
+        )
+    return {"total": len(mocks), "by_kind": rows}
+
+
+def outreach_stats(rows: list[Outreach]) -> dict:
+    kinds = Counter(r.kind for r in rows)
+    return {
+        "total": len(rows),
+        "people_reached": len({r.contact_id for r in rows if r.contact_id is not None}),
+        "by_kind": [{"kind": k.value, "count": kinds.get(k, 0)} for k in OutreachKind],
+    }
+
+
 def week_bounds(today: date) -> tuple[date, date]:
     start = today - timedelta(days=today.weekday())
     return start, start + timedelta(days=6)
 
 
 def weekly_summary(
-    apps: list[Application], logs: list[LeetCodeLog], completions: list[ModuleCompletion], today: date
+    apps: list[Application],
+    logs: list[LeetCodeLog],
+    completions: list[ModuleCompletion],
+    mocks: list[MockInterview],
+    outreach: list[Outreach],
+    today: date,
 ) -> dict:
     start, end = week_bounds(today)
 
@@ -164,4 +198,6 @@ def weekly_summary(
         "responses": sum(1 for a in apps if a.date_applied and in_week(first_response_date(a))),
         "problems": sum(1 for l in logs if in_week(l.solved_on)),
         "modules": sum(1 for c in completions if in_week(c.completed_on)),
+        "mock_interviews": sum(1 for m in mocks if in_week(m.held_on)),
+        "outreach": sum(1 for o in outreach if in_week(o.happened_on)),
     }

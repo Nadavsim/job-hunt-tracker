@@ -1,6 +1,7 @@
 import { NavLink, Navigate, Route, Routes } from "react-router-dom";
 import { ApplicationsPage } from "./pages/ApplicationsPage";
-import { ContactsPage } from "./pages/ContactsPage";
+import { MockInterviewsPage } from "./pages/MockInterviewsPage";
+import { NetworkingPage } from "./pages/NetworkingPage";
 import { DashboardPage } from "./pages/DashboardPage";
 import { GoalsPage } from "./pages/GoalsPage";
 import { NeetCodePage } from "./pages/NeetCodePage";
@@ -12,8 +13,9 @@ const NAV = [
   { to: "/applications", label: "Applications" },
   { to: "/goals", label: "Goals" },
   { to: "/neetcode", label: "NeetCode 150" },
+  { to: "/mocks", label: "Mock interviews" },
+  { to: "/networking", label: "Networking" },
   { to: "/dashboard", label: "Dashboard" },
-  { to: "/contacts", label: "Contacts" },
   { to: "/settings", label: "Settings" },
 ];
 
@@ -36,7 +38,9 @@ export function App() {
           <Route path="/neetcode" element={<NeetCodePage />} />
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/applications" element={<ApplicationsPage />} />
-          <Route path="/contacts" element={<ContactsPage />} />
+          <Route path="/mocks" element={<MockInterviewsPage />} />
+          <Route path="/networking" element={<NetworkingPage />} />
+          <Route path="/contacts" element={<Navigate to="/networking" replace />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="*" element={<p>Page not found.</p>} />
         </Routes>

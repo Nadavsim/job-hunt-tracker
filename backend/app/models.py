@@ -187,9 +187,11 @@ class ModuleCompletion(SQLModel, table=True):
 
 
 class GoalType(str, Enum):
-    leetcode = "leetcode"
+    leetcode = "leetcode"  # any coding problem, whatever the platform
     course_modules = "course_modules"
     applications = "applications"
+    mock_interviews = "mock_interviews"
+    networking = "networking"
 
 
 class Period(str, Enum):
@@ -211,7 +213,52 @@ DEFAULT_TARGETS: list[GoalTarget] = [
     GoalTarget(goal_type=GoalType.leetcode, period=Period.daily, target=2),
     GoalTarget(goal_type=GoalType.course_modules, period=Period.daily, target=1),
     GoalTarget(goal_type=GoalType.applications, period=Period.weekly, target=10),
+    GoalTarget(goal_type=GoalType.mock_interviews, period=Period.weekly, target=2),
+    GoalTarget(goal_type=GoalType.networking, period=Period.weekly, target=5),
 ]
+
+
+# --------------------------------------------------------------------------
+# Interview practice and networking
+# --------------------------------------------------------------------------
+
+
+class MockKind(str, Enum):
+    technical = "technical"
+    behavioral = "behavioral"
+    system_design = "system_design"
+    other = "other"
+
+
+class MockInterview(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    held_on: date = Field(default_factory=date.today, index=True)
+    kind: MockKind = MockKind.technical
+    partner: Optional[str] = None  # where / with whom: "Pramp", "a friend", ...
+    self_rating: Optional[int] = Field(default=None, ge=1, le=5)  # 1-5, how it went
+    notes: Optional[str] = None  # what to improve next time
+    created_at: NaiveDatetime = Field(default_factory=now_local)
+
+
+class OutreachKind(str, Enum):
+    message = "message"  # LinkedIn message, email, ...
+    coffee_chat = "coffee_chat"  # a call or meeting
+    referral_ask = "referral_ask"
+    follow_up = "follow_up"
+    other = "other"
+
+
+class Outreach(SQLModel, table=True):
+    """One networking action. Linked to a contact when there is one; if the
+    contact is deleted the action stays (it still happened, and still counts
+    for past streaks), just without a name."""
+
+    id: Optional[int] = Field(default=None, primary_key=True)
+    contact_id: Optional[int] = Field(default=None, foreign_key="contact.id", index=True, ondelete="SET NULL")
+    kind: OutreachKind = OutreachKind.message
+    happened_on: date = Field(default_factory=date.today, index=True)
+    notes: Optional[str] = None
+    created_at: NaiveDatetime = Field(default_factory=now_local)
 
 
 # --------------------------------------------------------------------------
