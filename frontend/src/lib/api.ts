@@ -6,6 +6,7 @@ import type {
   Contact,
   ContactInput,
   Course,
+  DashboardData,
   GoalTarget,
   GoalType,
   LeetCodeInput,
@@ -64,6 +65,7 @@ export const api = {
   deleteContact: (id: number) => request<void>(`/contacts/${id}`, { method: "DELETE" }),
 
   today: () => request<TodayData>("/today"),
+  dashboard: () => request<DashboardData>("/dashboard"),
 
   listLeetCode: () => request<LeetCodeLog[]>("/leetcode"),
   logLeetCode: (body: LeetCodeInput) => request<LeetCodeLog>("/leetcode", json("POST", body)),

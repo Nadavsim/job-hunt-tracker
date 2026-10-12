@@ -14,7 +14,7 @@ from sqlalchemy.engine import Engine
 
 from .config import FRONTEND_DIST
 from .db import init_db, make_engine
-from .routers import applications, contacts, goals, today
+from .routers import applications, contacts, dashboard, goals, today
 
 
 def create_app(engine: Engine | None = None, frontend_dist: Path | None = FRONTEND_DIST) -> FastAPI:
@@ -22,7 +22,7 @@ def create_app(engine: Engine | None = None, frontend_dist: Path | None = FRONTE
     app.state.engine = engine or make_engine()
     init_db(app.state.engine)
 
-    for module in (applications, contacts, goals, today):
+    for module in (applications, contacts, goals, today, dashboard):
         app.include_router(module.router)
 
     @app.get("/api/health")

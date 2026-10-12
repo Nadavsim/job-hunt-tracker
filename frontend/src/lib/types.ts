@@ -124,3 +124,45 @@ export interface TodayData {
   follow_ups: Application[];
   stale: Application[];
 }
+
+// --------------------------------------------------------------- dashboard
+
+export interface RateRow {
+  applied: number;
+  responded: number;
+  rate: number | null;
+}
+
+export interface DashboardData {
+  applications: {
+    wishlist: number;
+    total_applied: number;
+    total_responded: number;
+    response_rate: number | null;
+    median_days_to_response: number | null;
+    funnel: { stage: Stage; count: number }[];
+    outcomes: { stage: Stage; count: number }[];
+    by_source: (RateRow & { source: Source })[];
+    by_resume: (RateRow & { resume_version: string; enough_data: boolean })[];
+    min_resume_sample: number;
+  };
+  leetcode: {
+    total: number;
+    by_difficulty: { difficulty: Difficulty | "unknown"; count: number }[];
+    by_tag: { tag: string; count: number }[];
+    without_hints: number;
+    hints_known: number;
+    without_hints_rate: number | null;
+  };
+  week: WeekSummary;
+}
+
+export interface WeekSummary {
+  week_start: string;
+  week_end: string;
+  applied: number;
+  responses: number;
+  problems: number;
+  modules: number;
+  longest_streak: { goal_type: GoalType; label: string; length: number; period: Period } | null;
+}

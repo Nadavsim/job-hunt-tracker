@@ -18,7 +18,7 @@ export function GoalCard({ goal }: { goal: GoalProgress }) {
         <span style={{ width: `${pct}%` }} />
       </div>
       <div className="row small">
-        <strong>🔥 {streakLabel(goal)}</strong>
+        <strong>{goal.current_streak > 0 ? "🔥 " : ""}{streakLabel(goal)}</strong>
         <span className="muted">best: {goal.longest_streak}</span>
       </div>
       <p className={`small ${goal.met ? "good" : "muted"}`}>{streakHint(goal)}</p>
