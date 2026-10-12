@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { EmptyState } from "../components/EmptyState";
 import { LeetCodeForm } from "../components/LeetCodeForm";
+import { LeetCodeSync } from "../components/LeetCodeSync";
 import { api } from "../lib/api";
 import { formatDate } from "../lib/dates";
 import type { GoalTarget, GoalType, LeetCodeLog, Period } from "../lib/types";
@@ -20,6 +21,7 @@ export function GoalsPage() {
   const targets = useResource(() => api.listTargets());
   const logs = useResource(() => api.listLeetCode());
   const courses = useResource(() => api.listCourses());
+  const settings = useResource(() => api.getSettings());
   const [courseName, setCourseName] = useState("");
   const [courseTotal, setCourseTotal] = useState("10");
   const [error, setError] = useState<string | null>(null);
@@ -112,6 +114,11 @@ export function GoalsPage() {
       </section>
 
       <h2 style={{ marginTop: "1.5rem" }}>LeetCode log</h2>
+      {settings.data?.leetcode_username && (
+        <div style={{ marginBottom: "0.5rem" }}>
+          <LeetCodeSync onSynced={() => void logs.reload()} />
+        </div>
+      )}
       <LeetCodeForm
         onLog={async (input) => {
           await api.logLeetCode(input);

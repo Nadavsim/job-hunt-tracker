@@ -11,6 +11,8 @@ import type {
   GoalType,
   LeetCodeInput,
   LeetCodeLog,
+  Settings,
+  SyncResult,
   TodayData,
 } from "./types";
 
@@ -66,6 +68,10 @@ export const api = {
 
   today: () => request<TodayData>("/today"),
   dashboard: () => request<DashboardData>("/dashboard"),
+
+  getSettings: () => request<Settings>("/settings"),
+  saveSettings: (body: { leetcode_username: string | null }) => request<Settings>("/settings", json("PUT", body)),
+  syncLeetCode: () => request<SyncResult>("/leetcode/sync", { method: "POST" }),
 
   listLeetCode: () => request<LeetCodeLog[]>("/leetcode"),
   logLeetCode: (body: LeetCodeInput) => request<LeetCodeLog>("/leetcode", json("POST", body)),

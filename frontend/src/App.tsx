@@ -3,6 +3,7 @@ import { ApplicationsPage } from "./pages/ApplicationsPage";
 import { ContactsPage } from "./pages/ContactsPage";
 import { DashboardPage } from "./pages/DashboardPage";
 import { GoalsPage } from "./pages/GoalsPage";
+import { SettingsPage } from "./pages/SettingsPage";
 import { TodayPage } from "./pages/TodayPage";
 
 const NAV = [
@@ -11,6 +12,7 @@ const NAV = [
   { to: "/goals", label: "Goals" },
   { to: "/dashboard", label: "Dashboard" },
   { to: "/contacts", label: "Contacts" },
+  { to: "/settings", label: "Settings" },
 ];
 
 export function App() {
@@ -32,6 +34,7 @@ export function App() {
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/applications" element={<ApplicationsPage />} />
           <Route path="/contacts" element={<ContactsPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
           <Route path="*" element={<p>Page not found.</p>} />
         </Routes>
       </main>

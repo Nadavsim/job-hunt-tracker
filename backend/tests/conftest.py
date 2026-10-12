@@ -4,12 +4,14 @@ real data file is never opened (enforced by `_guard_real_db` below)."""
 from datetime import datetime
 
 import pytest
+import httpx
 from fastapi.testclient import TestClient
 
 from app import config
 from app.clock import FixedClock, get_clock
 from app.db import make_engine
 from app.main import create_app
+from app.services.leetcode_sync import http_client
 
 # A fixed "now" for tests: Wednesday 2026-03-18, 10:00 local time.
 NOW = datetime(2026, 3, 18, 10, 0, 0)
@@ -43,10 +45,31 @@ def engine():
     return make_engine(in_memory=True)
 
 
+def _no_network(request: httpx.Request) -> httpx.Response:
+    raise AssertionError(f"Test tried to reach the network: {request.url}")
+
+
 @pytest.fixture
-def client(engine, clock):
+def leetcode_transport():
+    """Tests replace `.handler` to fake LeetCode; by default any call fails the test."""
+
+    class Transport:
+        handler = staticmethod(_no_network)
+
+    return Transport
+
+
+@pytest.fixture
+def client(engine, clock, leetcode_transport):
     app = create_app(engine=engine, frontend_dist=None)
     app.dependency_overrides[get_clock] = lambda: clock.fixed
+
+    def fake_http_client():
+        transport = httpx.MockTransport(lambda req: leetcode_transport.handler(req))
+        with httpx.Client(transport=transport) as c:
+            yield c
+
+    app.dependency_overrides[http_client] = fake_http_client
     with TestClient(app) as c:
         yield c
 

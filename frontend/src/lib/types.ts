@@ -166,3 +166,17 @@ export interface WeekSummary {
   modules: number;
   longest_streak: { goal_type: GoalType; label: string; length: number; period: Period } | null;
 }
+
+// ---------------------------------------------------------------- settings
+
+export interface Settings {
+  leetcode_username: string | null;
+  leetcode_last_sync: string | null;
+}
+
+export interface SyncResult {
+  fetched: number;
+  imported: number;
+  skipped_duplicates: number;
+  last_sync: string;
+}
