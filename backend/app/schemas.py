@@ -6,7 +6,7 @@ from typing import Annotated, Optional
 
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints
 
-from .models import Difficulty, GoalType, LogSource, Period, Source, Stage
+from .models import Difficulty, GoalType, LogSource, Period, Platform, Source, Stage
 
 NonEmpty = Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=300)]
 OptionalText = Optional[Annotated[str, StringConstraints(strip_whitespace=True, max_length=10_000)]]
@@ -123,6 +123,7 @@ class LeetCodeLogCreate(BaseModel):
     solved_without_hints: Optional[bool] = None
     notes: OptionalText = None
     solved_on: Optional[date] = None  # defaults to today
+    platform: Platform = Platform.leetcode
 
 
 class LeetCodeLogUpdate(BaseModel):
@@ -133,6 +134,7 @@ class LeetCodeLogUpdate(BaseModel):
     solved_without_hints: Optional[bool] = None
     notes: OptionalText = None
     solved_on: Optional[date] = None
+    platform: Optional[Platform] = None
 
 
 class LeetCodeLogRead(ORM):
@@ -146,6 +148,7 @@ class LeetCodeLogRead(ORM):
     notes: Optional[str]
     solved_on: date
     source: LogSource
+    platform: Platform
 
 
 class CourseCreate(BaseModel):

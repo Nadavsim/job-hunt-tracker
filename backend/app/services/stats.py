@@ -27,6 +27,7 @@ from ..models import (
     Difficulty,
     LeetCodeLog,
     ModuleCompletion,
+    Platform,
     Stage,
 )
 from .leetcode import split_tags
@@ -125,6 +126,7 @@ def application_stats(apps: list[Application]) -> dict:
 
 def leetcode_stats(logs: list[LeetCodeLog]) -> dict:
     difficulty = Counter(l.difficulty.value if l.difficulty else "unknown" for l in logs)
+    platform = Counter(l.platform.value for l in logs)
     tags = Counter(t for l in logs for t in split_tags(l.tags))
     known = [l for l in logs if l.solved_without_hints is not None]
     clean = sum(1 for l in known if l.solved_without_hints)
@@ -133,6 +135,7 @@ def leetcode_stats(logs: list[LeetCodeLog]) -> dict:
         "by_difficulty": [
             {"difficulty": d, "count": difficulty.get(d, 0)} for d in [*(x.value for x in Difficulty), "unknown"]
         ],
+        "by_platform": [{"platform": p.value, "count": platform.get(p.value, 0)} for p in Platform],
         "by_tag": [{"tag": t, "count": c} for t, c in sorted(tags.items(), key=lambda kv: (-kv[1], kv[0]))],
         "without_hints": clean,
         "hints_known": len(known),

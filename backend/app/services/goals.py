@@ -9,7 +9,7 @@ from ..schemas import GoalProgressRead
 from .streaks import compute_streak, period_start
 
 GOAL_LABELS = {
-    GoalType.leetcode: "LeetCode problems",
+    GoalType.leetcode: "Coding problems",
     GoalType.course_modules: "Course modules",
     GoalType.applications: "Applications sent",
 }

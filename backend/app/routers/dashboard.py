@@ -4,7 +4,7 @@ from sqlmodel import Session, select
 from ..clock import Clock, get_clock
 from ..db import get_session
 from ..models import Application, LeetCodeLog, ModuleCompletion
-from ..services import stats
+from ..services import neetcode, stats
 from ..services.goals import goal_progress
 
 router = APIRouter(prefix="/api", tags=["dashboard"])
@@ -26,8 +26,13 @@ def dashboard(session: Session = Depends(get_session), clock: Clock = Depends(ge
         else None
     )
 
+    solved_slugs = {log.slug for log in logs}
     return {
         "applications": stats.application_stats(apps),
         "leetcode": stats.leetcode_stats(logs),
+        "neetcode150": {
+            "solved": sum(1 for p in neetcode.problems() if p["slug"] in solved_slugs),
+            "total": len(neetcode.problems()),
+        },
         "week": week,
     }

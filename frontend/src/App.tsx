@@ -3,6 +3,7 @@ import { ApplicationsPage } from "./pages/ApplicationsPage";
 import { ContactsPage } from "./pages/ContactsPage";
 import { DashboardPage } from "./pages/DashboardPage";
 import { GoalsPage } from "./pages/GoalsPage";
+import { NeetCodePage } from "./pages/NeetCodePage";
 import { SettingsPage } from "./pages/SettingsPage";
 import { TodayPage } from "./pages/TodayPage";
 
@@ -10,6 +11,7 @@ const NAV = [
   { to: "/", label: "Today" },
   { to: "/applications", label: "Applications" },
   { to: "/goals", label: "Goals" },
+  { to: "/neetcode", label: "NeetCode 150" },
   { to: "/dashboard", label: "Dashboard" },
   { to: "/contacts", label: "Contacts" },
   { to: "/settings", label: "Settings" },
@@ -31,6 +33,7 @@ export function App() {
           <Route path="/" element={<TodayPage />} />
           <Route path="/today" element={<Navigate to="/" replace />} />
           <Route path="/goals" element={<GoalsPage />} />
+          <Route path="/neetcode" element={<NeetCodePage />} />
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/applications" element={<ApplicationsPage />} />
           <Route path="/contacts" element={<ContactsPage />} />

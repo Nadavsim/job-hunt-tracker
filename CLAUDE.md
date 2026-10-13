@@ -52,6 +52,7 @@ runs `tsc -b`) must all pass.
 - Forms: only truly required fields are required; Enter submits; focus returns to the first field after a successful add.
 - Tests are written with each feature, not afterwards. Test data must be obviously fake ("Example Co", "Sam Sample", example.com).
 - Never commit `data/`, `*.db`, `.env*`, `exports/` (already in `.gitignore`).
+  The `data/` rule matches a folder named `data` *anywhere*, on purpose. Don't put files that must be committed in a folder named `data` (bundled reference files live in `backend/app/reference/`).
 
 ## Conventions / decisions (don't "fix" these without asking)
 
@@ -80,16 +81,20 @@ runs `tsc -b`) must all pass.
 18. **`solved_without_hints` is nullable.** `null` = unknown (synced problems); the rate on the dashboard only uses known values and says how many that is.
 19. **LeetCode sync** (opt-in, on demand, no polling): dedupe key is `(slug, local solved date)`. Manual logs get a slug derived from the typed name (`"1. Two Sum"` → `two-sum`) so they match synced ones. Solving the same problem again on a different day is new practice and is imported. Any failure → HTTP 502 with a human message, `session.rollback()`, nothing half-imported. Only the username is sent.
 20. **Bind to `127.0.0.1` only** (hard-coded in `config.py`). No auth exists, and the DB holds personal data.
-21. **No Alembic yet.** `SQLModel.metadata.create_all` creates missing tables but does **not** alter existing ones. Adding a column to an existing table needs a migration (or a manual `ALTER TABLE`) — that's the trigger to introduce Alembic.
+21. **No Alembic yet.** `SQLModel.metadata.create_all` creates missing tables but does **not** alter existing ones. Purely *additive* columns are listed in `db.ADDED_COLUMNS` and added at startup with `ALTER TABLE … ADD COLUMN` if missing (idempotent, tested against an old-schema database). Anything else (rename, type change, drop, data migration) is the trigger to introduce Alembic.
 22. **SPA fallback**: FastAPI serves `frontend/dist` and returns `index.html` for unknown non-`/api` paths so client routes survive refresh. Unknown `/api/*` paths stay 404.
 23. **Recharts, single-series horizontal bars only**, one accent colour from the theme; rates are shown in tables rather than charts. Keep charts few.
+24. **One problem log for every platform.** `LeetCodeLog` has a `platform` column (leetcode / neetcode / other). The table, the `/api/leetcode` routes and the `leetcode` goal-type value keep their names because they are stored in existing databases; user-facing text says "coding problems" / "problem log".
+25. **NeetCode 150 progress is derived, not stored.** A checklist problem is solved if any problem log has its slug, from any platform, so logging by hand or syncing from LeetCode ticks it off, and there is no second source of truth. "Solved" on the checklist creates a normal log (platform `neetcode`, slug taken from the list, topic as its tag), so it counts toward the daily goal. There is no "untick": delete the log entry instead.
+26. **The NeetCode 150 list is bundled data** (`backend/app/reference/neetcode150.json`, one problem per line), extracted from `.problemSiteData.json` in the public `neetcode-gh/leetcode` GitHub repo (entries flagged `neetcode150`). It's not fetched at runtime: NeetCode has no public API, and the app must not depend on the network. Problem links go to LeetCode, because that file only has LeetCode URLs.
 
 ## Planned next (not yet implemented)
 
 - Alembic migrations (first schema change to an existing table should introduce it).
 - Export/import (CSV/JSON) for backups — exports must go to the git-ignored `exports/` folder.
 - "Snooze" for stale suggestions (currently they stay until the stage changes or the app is archived).
-- Inline editing of LeetCode logs beyond the "solved without hints" dropdown (problem/tags/difficulty), and editing module completion dates.
+- Refreshing the bundled NeetCode 150 list if NeetCode changes it (re-extract from the repo file above; keep the format).
+- Inline editing of problem logs beyond the "solved without hints" dropdown (problem/tags/difficulty), and editing module completion dates.
 - Contact ↔ application linking from the Contacts page (currently done from the application dialog).
 - Versioned goal targets, if changing targets retroactively ever becomes a problem.
 - `run.py dev` on Windows: `terminate()` stops `npm.cmd` but may leave the Vite child running; if that happens, kill the process tree (e.g. `taskkill /T`).

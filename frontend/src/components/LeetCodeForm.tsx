@@ -1,17 +1,32 @@
 import { useRef, useState, type FormEvent } from "react";
 import { todayISO } from "../lib/dates";
 import { parseTags } from "../lib/goals";
-import type { Difficulty, LeetCodeInput } from "../lib/types";
+import { PLATFORM_LABELS } from "../lib/labels";
+import { PLATFORMS, type Difficulty, type LeetCodeInput, type Platform } from "../lib/types";
+
+const PLATFORM_KEY = "problemLog.platform";
+
+/** Remember the last platform used, since most people practise in one place. */
+function loadPlatform(): Platform {
+  try {
+    const saved = localStorage.getItem(PLATFORM_KEY);
+    return PLATFORMS.includes(saved as Platform) ? (saved as Platform) : "leetcode";
+  } catch {
+    return "leetcode";
+  }
+}
 
 interface Props {
   onLog: (input: LeetCodeInput) => Promise<unknown>;
   compact?: boolean;
 }
 
-/** Problem name is the only required field; Enter submits; focus returns to it. */
+/** Problem name is the only required field; Enter submits; focus returns to it.
+ * Logs problems from any platform (the API still calls them "leetcode" logs). */
 export function LeetCodeForm({ onLog, compact = false }: Props) {
   const [problem, setProblem] = useState("");
   const [difficulty, setDifficulty] = useState<Difficulty | "">("");
+  const [platform, setPlatform] = useState<Platform>(loadPlatform);
   const [tags, setTags] = useState("");
   const [noHints, setNoHints] = useState(true);
   const [solvedOn, setSolvedOn] = useState(todayISO());
@@ -30,7 +45,13 @@ export function LeetCodeForm({ onLog, compact = false }: Props) {
         solved_without_hints: noHints,
         solved_on: solvedOn || undefined,
         notes: notes.trim() || null,
+        platform,
       });
+      try {
+        localStorage.setItem(PLATFORM_KEY, platform);
+      } catch {
+        /* storage unavailable - not important */
+      }
       setProblem("");
       setTags("");
       setNotes("");
@@ -60,6 +81,16 @@ export function LeetCodeForm({ onLog, compact = false }: Props) {
           <option value="easy">Easy</option>
           <option value="medium">Medium</option>
           <option value="hard">Hard</option>
+        </select>
+      </label>
+      <label>
+        Platform
+        <select value={platform} onChange={(e) => setPlatform(e.target.value as Platform)}>
+          {PLATFORMS.map((p) => (
+            <option key={p} value={p}>
+              {PLATFORM_LABELS[p]}
+            </option>
+          ))}
         </select>
       </label>
       <label className="grow">
