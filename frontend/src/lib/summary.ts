@@ -18,6 +18,8 @@ export function weeklySummaryText(w: WeekSummary): string {
     plural(w.responses, "response"),
     plural(w.problems, "problem"),
     plural(w.modules, "module"),
+    plural(w.mock_interviews, "mock interview"),
+    plural(w.outreach, "networking action"),
   ];
   const streak = w.longest_streak
     ? `longest streak ${plural(w.longest_streak.length, w.longest_streak.period === "daily" ? "day" : "week")} (${w.longest_streak.label})`

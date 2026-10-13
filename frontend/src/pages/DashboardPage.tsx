@@ -3,7 +3,7 @@ import { BarChartCard } from "../components/BarChartCard";
 import { EmptyState } from "../components/EmptyState";
 import { WeeklySummaryCard } from "../components/WeeklySummaryCard";
 import { api } from "../lib/api";
-import { PLATFORM_LABELS, SOURCE_LABELS, STAGE_LABELS } from "../lib/labels";
+import { MOCK_KIND_LABELS, OUTREACH_KIND_LABELS, PLATFORM_LABELS, SOURCE_LABELS, STAGE_LABELS } from "../lib/labels";
 import { percent } from "../lib/summary";
 import { useResource } from "../lib/useResource";
 
@@ -14,7 +14,7 @@ export function DashboardPage() {
   if (dash.error) return <p role="alert" className="error">Could not load dashboard: {dash.error}</p>;
   if (!dash.data) return <p className="muted">Loading…</p>;
 
-  const { applications: a, leetcode: lc, neetcode150: nc, week } = dash.data;
+  const { applications: a, leetcode: lc, neetcode150: nc, mock_interviews: mocks, networking: net, week } = dash.data;
 
   return (
     <div>
@@ -175,6 +175,67 @@ export function DashboardPage() {
           </section>
         </div>
       )}
+
+      <h2 style={{ marginTop: "1.5rem" }}>Interview practice & networking</h2>
+      <div className="grid">
+        <section className="panel" aria-label="Mock interviews">
+          <h2>Mock interviews</h2>
+          {mocks.total === 0 ? (
+            <p className="muted small">
+              None logged yet. <Link to="/mocks">Log a mock interview</Link> to see counts and average self-rating by
+              type.
+            </p>
+          ) : (
+            <table>
+              <thead>
+                <tr>
+                  <th>Type</th>
+                  <th>Count</th>
+                  <th>Avg rating</th>
+                </tr>
+              </thead>
+              <tbody>
+                {mocks.by_kind
+                  .filter((k) => k.count > 0)
+                  .map((k) => (
+                    <tr key={k.kind}>
+                      <td>{MOCK_KIND_LABELS[k.kind]}</td>
+                      <td>{k.count}</td>
+                      <td>{k.avg_rating === null ? "—" : `${k.avg_rating} / 5`}</td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          )}
+        </section>
+        <section className="panel" aria-label="Networking">
+          <h2>Networking</h2>
+          {net.total === 0 ? (
+            <p className="muted small">
+              None logged yet. <Link to="/networking">Log a message or coffee chat</Link>.
+            </p>
+          ) : (
+            <>
+              <div className="stat-row">
+                <div>
+                  <div className="big">{net.total}</div>
+                  <div className="muted small">actions</div>
+                </div>
+                <div>
+                  <div className="big">{net.people_reached}</div>
+                  <div className="muted small">people reached</div>
+                </div>
+              </div>
+              <p className="small">
+                {net.by_kind
+                  .filter((k) => k.count > 0)
+                  .map((k) => `${OUTREACH_KIND_LABELS[k.kind]}: ${k.count}`)
+                  .join(" · ")}
+              </p>
+            </>
+          )}
+        </section>
+      </div>
     </div>
   );
 }

@@ -11,6 +11,10 @@ import type {
   GoalType,
   LeetCodeInput,
   LeetCodeLog,
+  MockInterview,
+  MockInterviewInput,
+  Outreach,
+  OutreachInput,
   NeetCodeChecklist,
   Settings,
   SyncResult,
@@ -91,6 +95,14 @@ export const api = {
   neetcode150: () => request<NeetCodeChecklist>("/neetcode150"),
   logNeetCode: (slug: string, solvedWithoutHints: boolean | null) =>
     request<LeetCodeLog>(`/neetcode150/${encodeURIComponent(slug)}/log`, json("POST", { solved_without_hints: solvedWithoutHints })),
+
+  listMocks: () => request<MockInterview[]>("/mocks"),
+  logMock: (body: MockInterviewInput) => request<MockInterview>("/mocks", json("POST", body)),
+  deleteMock: (id: number) => request<void>(`/mocks/${id}`, { method: "DELETE" }),
+
+  listOutreach: () => request<Outreach[]>("/outreach"),
+  logOutreach: (body: OutreachInput) => request<Outreach>("/outreach", json("POST", body)),
+  deleteOutreach: (id: number) => request<void>(`/outreach/${id}`, { method: "DELETE" }),
 
   listTargets: () => request<GoalTarget[]>("/goals/targets"),
   updateTarget: (goalType: GoalType, body: Partial<Omit<GoalTarget, "goal_type">>) =>

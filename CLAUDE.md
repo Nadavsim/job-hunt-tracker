@@ -87,8 +87,15 @@ runs `tsc -b`) must all pass.
 24. **One problem log for every platform.** `LeetCodeLog` has a `platform` column (leetcode / neetcode / other). The table, the `/api/leetcode` routes and the `leetcode` goal-type value keep their names because they are stored in existing databases; user-facing text says "coding problems" / "problem log".
 25. **NeetCode 150 progress is derived, not stored.** A checklist problem is solved if any problem log has its slug, from any platform, so logging by hand or syncing from LeetCode ticks it off, and there is no second source of truth. "Solved" on the checklist creates a normal log (platform `neetcode`, slug taken from the list, topic as its tag), so it counts toward the daily goal. There is no "untick": delete the log entry instead.
 26. **The NeetCode 150 list is bundled data** (`backend/app/reference/neetcode150.json`, one problem per line), extracted from `.problemSiteData.json` in the public `neetcode-gh/leetcode` GitHub repo (entries flagged `neetcode150`). It's not fetched at runtime: NeetCode has no public API, and the app must not depend on the network. Problem links go to LeetCode, because that file only has LeetCode URLs.
+27. **Mock interviews and networking are separate logs with their own goals** (`MockInterview`, `Outreach`; goal types `mock_interviews`, `networking`, weekly 2 and 5 by default). They plug into the same streak code by adding a branch to `services/goals.activity_dates`. New goal types reach existing databases automatically: `init_db` adds any missing default targets and never overwrites the user's own.
+28. **Outreach can create its contact.** `POST /api/outreach` takes `contact_id` *or* `new_contact_name` (never both), so logging a message to someone new is one form, not two. A contact is optional ("posted in a community"). Deleting a contact keeps its outreach rows (`ondelete=SET NULL`): it still happened and still counts for past streaks.
+29. **Self-rating is optional, 1–5**, and averages use rated mocks only. It shows trends in how you feel interviews go, not interview performance; that's how the UI words it.
+30. **Contacts page is now "Networking"** (`/networking`; `/contacts` redirects). It's the same contact list with outreach on top, because contacts only matter for networking.
 
 ## Planned next (not yet implemented)
+
+- Behavioral story bank: STAR stories tagged by theme (conflict, failure, ownership…), surfaced when an application reaches phone screen. Discussed and deferred to its own PR.
+- Editing mock-interview and outreach entries in the UI (the API supports PATCH; the UI only has add/delete).
 
 - Alembic migrations (first schema change to an existing table should introduce it).
 - Export/import (CSV/JSON) for backups — exports must go to the git-ignored `exports/` folder.

@@ -4,7 +4,15 @@ from datetime import date
 
 from sqlmodel import Session, select
 
-from ..models import Application, GoalTarget, GoalType, LeetCodeLog, ModuleCompletion
+from ..models import (
+    Application,
+    GoalTarget,
+    GoalType,
+    LeetCodeLog,
+    MockInterview,
+    ModuleCompletion,
+    Outreach,
+)
 from ..schemas import GoalProgressRead
 from .streaks import compute_streak, period_start
 
@@ -12,6 +20,8 @@ GOAL_LABELS = {
     GoalType.leetcode: "Coding problems",
     GoalType.course_modules: "Course modules",
     GoalType.applications: "Applications sent",
+    GoalType.mock_interviews: "Mock interviews",
+    GoalType.networking: "Networking",
 }
 
 
@@ -22,6 +32,10 @@ def activity_dates(session: Session, goal_type: GoalType) -> list[date]:
         return list(session.exec(select(LeetCodeLog.solved_on)).all())
     if goal_type == GoalType.course_modules:
         return list(session.exec(select(ModuleCompletion.completed_on)).all())
+    if goal_type == GoalType.mock_interviews:
+        return list(session.exec(select(MockInterview.held_on)).all())
+    if goal_type == GoalType.networking:
+        return list(session.exec(select(Outreach.happened_on)).all())
     return list(
         session.exec(select(Application.date_applied).where(Application.date_applied.is_not(None))).all()
     )

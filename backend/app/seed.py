@@ -21,7 +21,11 @@ from .models import (
     Course,
     Difficulty,
     LeetCodeLog,
+    MockInterview,
+    MockKind,
     ModuleCompletion,
+    Outreach,
+    OutreachKind,
     Source,
     Stage,
     StageChange,
@@ -94,6 +98,16 @@ def seed(session: Session, today: date, rng: random.Random) -> None:
                     solved_on=today - timedelta(days=days_ago),
                 )
             )
+
+    for days_ago, kind, rating in [(2, MockKind.technical, 3), (6, MockKind.behavioral, 2), (9, MockKind.technical, 4)]:
+        session.add(
+            MockInterview(held_on=today - timedelta(days=days_ago), kind=kind, partner="Demo practice partner",
+                          self_rating=rating, notes="Demo data")
+        )
+    session.flush()  # contacts get ids
+    for days_ago, contact, kind in [(1, contacts[0], OutreachKind.message), (3, contacts[1], OutreachKind.coffee_chat),
+                                    (8, contacts[0], OutreachKind.follow_up)]:
+        session.add(Outreach(contact_id=contact.id, kind=kind, happened_on=today - timedelta(days=days_ago)))
 
     course = Course(name="Example Algorithms Course", total_modules=20)
     course.completions = [ModuleCompletion(completed_on=today - timedelta(days=d)) for d in range(1, 8)]

@@ -42,6 +42,8 @@ function emptyDashboard(): DashboardData {
       without_hints_rate: null,
     },
     neetcode150: { solved: 0, total: 150 },
+    mock_interviews: { total: 0, by_kind: [] },
+    networking: { total: 0, people_reached: 0, by_kind: [] },
     week: {
       week_start: "2026-03-16",
       week_end: "2026-03-22",
@@ -49,6 +51,8 @@ function emptyDashboard(): DashboardData {
       responses: 0,
       problems: 0,
       modules: 0,
+      mock_interviews: 0,
+      outreach: 0,
       longest_streak: null,
     },
   };

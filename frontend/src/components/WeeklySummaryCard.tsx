@@ -20,6 +20,8 @@ export function WeeklySummaryCard({ week }: { week: WeekSummary }) {
     ["responses", week.responses],
     ["problems", week.problems],
     ["modules", week.modules],
+    ["mock interviews", week.mock_interviews],
+    ["networking", week.outreach],
   ];
 
   return (

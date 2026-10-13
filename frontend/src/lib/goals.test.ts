@@ -32,3 +32,12 @@ describe("goal labels", () => {
     expect(streakHint({ met: true, current_streak: 5, period: "daily", count: 2, target: 2 })).toBe("Target met — nice.");
   });
 });
+
+describe("GOAL_LOG_LINKS", () => {
+  it("points every goal at the page where it is logged", async () => {
+    const { GOAL_LOG_LINKS } = await import("./goals");
+    expect(GOAL_LOG_LINKS.mock_interviews).toBe("/mocks");
+    expect(GOAL_LOG_LINKS.networking).toBe("/networking");
+    expect(Object.keys(GOAL_LOG_LINKS)).toHaveLength(5);
+  });
+});

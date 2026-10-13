@@ -2,15 +2,21 @@ from fastapi import APIRouter, Depends, HTTPException, Response
 from sqlmodel import Session, select
 
 from ..db import get_session
-from ..models import Application, Contact
+from ..models import Application, Contact, Outreach
 from ..schemas import ContactCreate, ContactRead, ContactUpdate
 
 router = APIRouter(prefix="/api/contacts", tags=["contacts"])
 
 
-def _to_read(contact: Contact) -> ContactRead:
+def _to_read(contact: Contact, session: Session) -> ContactRead:
+    dates = session.exec(select(Outreach.happened_on).where(Outreach.contact_id == contact.id)).all()
     return ContactRead.model_validate(
-        {**contact.model_dump(), "application_ids": [a.id for a in contact.applications]}
+        {
+            **contact.model_dump(),
+            "application_ids": [a.id for a in contact.applications],
+            "outreach_count": len(dates),
+            "last_contacted": max(dates, default=None),
+        }
     )
 
 
@@ -33,7 +39,7 @@ def _get_or_404(session: Session, contact_id: int) -> Contact:
 
 @router.get("", response_model=list[ContactRead])
 def list_contacts(session: Session = Depends(get_session)):
-    return [_to_read(c) for c in session.exec(select(Contact).order_by(Contact.name)).all()]
+    return [_to_read(c, session) for c in session.exec(select(Contact).order_by(Contact.name)).all()]
 
 
 @router.post("", response_model=ContactRead, status_code=201)
@@ -43,7 +49,7 @@ def create_contact(data: ContactCreate, session: Session = Depends(get_session))
     session.add(contact)
     session.commit()
     session.refresh(contact)
-    return _to_read(contact)
+    return _to_read(contact, session)
 
 
 @router.patch("/{contact_id}", response_model=ContactRead)
@@ -60,7 +66,7 @@ def update_contact(contact_id: int, data: ContactUpdate, session: Session = Depe
     session.add(contact)
     session.commit()
     session.refresh(contact)
-    return _to_read(contact)
+    return _to_read(contact, session)
 
 
 @router.delete("/{contact_id}", status_code=204)

@@ -1,4 +1,4 @@
-import type { Platform, Source, Stage } from "./types";
+import type { MockKind, OutreachKind, Platform, Source, Stage } from "./types";
 
 export const STAGE_LABELS: Record<Stage, string> = {
   wishlist: "Wishlist",
@@ -22,5 +22,20 @@ export const SOURCE_LABELS: Record<Source, string> = {
 export const PLATFORM_LABELS: Record<Platform, string> = {
   leetcode: "LeetCode",
   neetcode: "NeetCode",
+  other: "Other",
+};
+
+export const MOCK_KIND_LABELS: Record<MockKind, string> = {
+  technical: "Technical / coding",
+  behavioral: "Behavioral",
+  system_design: "System design",
+  other: "Other",
+};
+
+export const OUTREACH_KIND_LABELS: Record<OutreachKind, string> = {
+  message: "Message / email",
+  coffee_chat: "Coffee chat / call",
+  referral_ask: "Asked for a referral",
+  follow_up: "Follow-up",
   other: "Other",
 };

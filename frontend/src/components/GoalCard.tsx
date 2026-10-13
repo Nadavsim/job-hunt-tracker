@@ -1,11 +1,17 @@
-import { progressLabel, progressPercent, streakHint, streakLabel } from "../lib/goals";
+import { Link } from "react-router-dom";
+import { GOAL_LOG_LINKS, progressLabel, progressPercent, streakHint, streakLabel } from "../lib/goals";
 import type { GoalProgress } from "../lib/types";
 
 export function GoalCard({ goal }: { goal: GoalProgress }) {
   const pct = progressPercent(goal);
   return (
     <section className="panel" aria-label={goal.label}>
-      <h2>{goal.label}</h2>
+      <div className="row" style={{ justifyContent: "space-between" }}>
+        <h2>{goal.label}</h2>
+        <Link className="small" to={GOAL_LOG_LINKS[goal.goal_type]} aria-label={`Log ${goal.label.toLowerCase()}`}>
+          Log →
+        </Link>
+      </div>
       <div className="big">{progressLabel(goal)}</div>
       <div
         className={`progress${goal.met ? " done" : ""}`}
